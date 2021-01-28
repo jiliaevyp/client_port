@@ -11,11 +11,12 @@ import (
 )
 
 var (
-	requestMessage, _network, _port string
-	ErrInvalidTypeNetwork           = errors.New("invalid type network")
-	ErrInvalidPort                  = errors.New("invalid port number")
-	ErrInvalidSendToServer          = errors.New("invalid send to server")
-	ErrInvalidServerRead            = errors.New("invalid read from server")
+	requestMessage, _network, _ip, _port string
+	ErrInvalidTypeNetwork                = errors.New("invalid type network")
+	ErrInvalidIPaddress                  = errors.New("invalid IP address")
+	ErrInvalidPort                       = errors.New("invalid port number")
+	ErrInvalidSendToServer               = errors.New("invalid send to server")
+	ErrInvalidServerRead                 = errors.New("invalid read from server")
 )
 
 // запрос
@@ -59,6 +60,24 @@ func inpNetwork() (string, int) {
 		return typNet, 1
 	} else {
 		return typNet, 0
+	}
+}
+
+// ввод ip сервера
+func inpIP() {
+	err := 1
+	for err == 1 {
+		fmt.Print("Введите IP сервера:	")
+		fmt.Scanf(
+			"%s\n",
+			&_ip,
+		)
+		iperr := net.ParseIP(_ip)
+		if iperr != nil {
+			err = 0
+		} else {
+			fmt.Println(ErrInvalidIPaddress)
+		}
 	}
 }
 
@@ -131,6 +150,7 @@ func main() {
 			fmt.Println(ErrInvalidTypeNetwork)
 		}
 	}
+	inpIP() // ввод IP сервера
 	err = 1
 	for err == 1 {
 		fmt.Print("Введите номер порта:	")
@@ -139,6 +159,8 @@ func main() {
 			fmt.Println(ErrInvalidPort)
 		}
 	}
+	_port = _ip + _port
+	fmt.Println("Сервер:   ", _network, _port)
 	request := 0
 	for request == 0 {
 		fmt.Print("\n", "Для запроса нажми 'Y'---> ")
